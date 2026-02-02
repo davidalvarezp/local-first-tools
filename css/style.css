@@ -1,0 +1,135 @@
+:root {
+    --bg-main: #0b0b0b;
+    --bg-panel: #111;
+    --border: #2a2a2a;
+    --text-main: #eaeaea;
+    --text-muted: #a0a0a0;
+    --accent: #4ea1ff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg-main);
+    color: var(--text-main);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+}
+
+/* Header */
+.header {
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-panel);
+}
+
+.header-inner {
+    padding: 16px 24px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* Layout */
+.layout {
+    display: flex;
+    min-height: calc(100vh - 60px);
+}
+
+/* Sidebar */
+aside {
+    width: 240px;
+    border-right: 1px solid var(--border);
+    background: var(--bg-panel);
+    padding: 20px;
+}
+
+.sidebar-nav h4 {
+    margin-top: 20px;
+    margin-bottom: 8px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.sidebar-nav a {
+    display: block;
+    color: var(--text-main);
+    text-decoration: none;
+    padding: 6px 0;
+    font-size: 0.95rem;
+}
+
+.sidebar-nav a:hover {
+    color: var(--accent);
+}
+
+/* Content */
+.content {
+    flex: 1;
+    padding: 32px;
+    max-width: 900px;
+}
+
+/* Hero */
+.hero h1 {
+    font-size: 2.4rem;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    margin-top: 8px;
+}
+
+/* Sections */
+.text-block, .tools {
+    margin-top: 40px;
+}
+
+.text-block ul {
+    margin-top: 12px;
+    padding-left: 20px;
+}
+
+.text-block li {
+    margin-bottom: 6px;
+}
+
+/* Tools */
+.tool-card {
+    border: 1px solid var(--border);
+    padding: 20px;
+    margin-top: 16px;
+    background: #0e0e0e;
+}
+
+.tool-card h3 {
+    margin-bottom: 6px;
+}
+
+.tool-card a {
+    display: inline-block;
+    margin-top: 10px;
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.tool-card a:hover {
+    text-decoration: underline;
+}
+
+.coming-soon {
+    margin-top: 20px;
+    color: var(--text-muted);
+}
+
+/* Ads placeholder */
+.ad-slot {
+    margin: 40px 0;
+    padding: 20px;
+    border: 1px dashed var(--border);
+    text-align: center;
+    color: var(--text-muted);
+}
