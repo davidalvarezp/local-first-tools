@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Remove Image Metadata — Local-First Tools</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+    <style>
+        /* === Tool-specific styles === */
+        .tool-wrapper {
+            margin-top: 32px;
+        }
+
+        .drop-area {
+            border: 2px dashed var(--border);
+            border-radius: 12px;
+            padding: 48px 20px;
+            text-align: center;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: border 0.2s, background 0.2s;
+        }
+
+        .drop-area.hover {
+            border-color: var(--accent);
+            background: #0f172a;
+        }
+
+        .images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 20px;
+            margin-top: 32px;
+        }
+
+        .image-card {
+            border: 1px solid var(--border);
+            background: #0e0e0e;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .image-card img {
+            width: 100%;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .image-card button {
+            background: var(--accent);
+            border: none;
+            border-radius: 6px;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: #000;
+            font-weight: 600;
+        }
+
+        .image-card button:hover {
+            opacity: 0.9;
+        }
+
+        .privacy-note {
+            margin-top: 24px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <div id="header"></div>
+
+    <!-- Main layout -->
+    <div class="layout">
+        <!-- Sidebar izquierdo -->
+        <aside id="sidebar"></aside>
+
+        <!-- Contenido principal -->
+        <main class="content">
+            <div class="content-inner">
+                <section class="page-content">
+                    <h1>Remove Image Metadata</h1>
+                    <p class="subtitle">
+                        Strip EXIF metadata from images locally in your browser.
+                        No uploads. No tracking.
+                    </p>
+
+                    <section class="tool-wrapper">
+                        <div id="dropArea" class="drop-area">
+                            Drag & drop images here or click to select
+                        </div>
+
+                        <input
+                            type="file"
+                            id="fileInput"
+                            accept="image/*"
+                            multiple
+                            hidden
+                        >
+
+                        <div id="images" class="images-grid"></div>
+
+                        <p class="privacy-note">
+                            All processing happens locally in your browser.
+                            Your files never leave your device.
+                        </p>
+                    </section>
+                </section>
+            </div>
+        </main>
+
+        <!-- Sidebar derecho -->
+        <aside class="right-ads">
+            <div class="ad-box">Ad space</div>
+            <div class="ad-box">Ad space</div>
+        </aside>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer"></div>
+
+    <!-- Scripts -->
+    <script src="/assets/js/includes.js"></script>
+    <script src="/assets/js/ui.js"></script>
+
+    <script>
+        // Remove Metadata logic
+        const dropArea = document.getElementById('dropArea');
+        const fileInput = document.getElementById('fileInput');
+        const imagesGrid = document.getElementById('images');
+
+        dropArea.addEventListener('click', () => fileInput.click());
+
+        dropArea.addEventListener('dragover', e => {
+            e.preventDefault();
+            dropArea.classList.add('hover');
+        });
+
+        dropArea.addEventListener('dragleave', () => {
+            dropArea.classList.remove('hover');
+        });
+
+        dropArea.addEventListener('drop', e => {
+            e.preventDefault();
+            dropArea.classList.remove('hover');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+
+        function handleFiles(files) {
+            Array.from(files).forEach(file => {
+                if (!file.type.startsWith('image/')) return;
+
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = new Image();
+                    img.onload = () => {
+                        // Create a canvas to remove metadata
+                        const canvas = document.createElement('canvas');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0);
+
+                        // Convert canvas to blob
+                        canvas.toBlob(blob => {
+                            const url = URL.createObjectURL(blob);
+
+                            const card = document.createElement('div');
+                            card.className = 'image-card';
+
+                            const imageEl = document.createElement('img');
+                            imageEl.src = url;
+
+                            const button = document.createElement('button');
+                            button.textContent = 'Download clean image';
+                            button.onclick = () => {
+                                const a = document.createElement('a');
+                                a.href = url;
+                                a.download = `clean_${file.name}`;
+                                a.click();
+                            };
+
+                            card.appendChild(imageEl);
+                            card.appendChild(button);
+                            imagesGrid.appendChild(card);
+                        }, 'image/png');
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+    </script>
+
+</body>
+</html>

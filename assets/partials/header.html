@@ -1,0 +1,59 @@
+<header style="background:#111;border-bottom:1px solid #2a2a2a;">
+  <style>
+    .header-inline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between; /* separa izquierda y derecha */
+      padding: 14px 20px;
+      gap: 16px;
+      font-family: system-ui, sans-serif;
+    }
+
+    .header-title a {
+      color: white;              /* siempre blanco */
+      font-size: 1.5rem;
+      font-weight: 600;
+      text-decoration: none;     /* sin subrayado */
+    }
+
+    .header-title a:hover {
+      color: white;              /* sigue blanco al pasar el cursor */
+      text-decoration: none;     /* sigue sin subrayado */
+    }
+
+    .github-stats-inline {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      background:#111;
+      border:1px solid #2a2a2a;
+      padding:10px 16px;
+      border-radius:8px;
+    }
+
+    .github-stats-inline img {
+      height: 28px;
+    }
+
+    .github-stats-inline a {
+      color: white;
+      font-weight: 600;
+      text-decoration: none;
+    }
+  </style>
+
+  <div class="header-inline">
+    <!-- Título a la izquierda como enlace -->
+    <div class="header-title">
+        <a href="/">Local-First Tools</a>
+    </div>
+
+    <!-- Repo GitHub a la derecha -->
+    <div class="github-stats-inline">
+      <img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg" alt="GitHub">
+      <a href="https://github.com/davidalvarezp/local-first-tools" target="_blank">
+        davidalvarezp/local-first-tools
+      </a>
+    </div>
+  </div>
+</header>

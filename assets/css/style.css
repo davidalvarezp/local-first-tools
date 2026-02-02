@@ -7,16 +7,22 @@
     --accent: #4ea1ff;
 }
 
+/* ===== Reset ===== */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* ===== Base layout ===== */
 body {
     background: var(--bg-main);
     color: var(--text-main);
     font-family: system-ui, sans-serif;
+
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ===== Header ===== */
@@ -45,10 +51,11 @@ body {
     cursor: pointer;
 }
 
-/* ===== Layout ===== */
+/* ===== Main layout ===== */
 .layout {
+    flex: 1;
     display: flex;
-    min-height: calc(100vh - 60px);
+    width: 100%;
 }
 
 /* ===== Left sidebar ===== */
@@ -57,6 +64,7 @@ body {
     background: var(--bg-panel);
     border-right: 1px solid var(--border);
     padding: 20px;
+    flex-shrink: 0;
 }
 
 .sidebar-nav a {
@@ -77,15 +85,20 @@ body {
 .content {
     flex: 1;
     padding: 32px;
-    max-width: 900px;
 }
 
-/* ===== Right ads (DESKTOP ONLY) ===== */
-#right-ads {
+.content-inner {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* ===== Right sidebar (ads) — desktop only ===== */
+.right-ads {
     width: 260px;
     border-left: 1px solid var(--border);
     background: var(--bg-panel);
     padding: 20px;
+    flex-shrink: 0;
 }
 
 .ad-box {
@@ -105,11 +118,12 @@ footer {
 
 .footer-inner {
     max-width: 1200px;
-    margin: auto;
+    margin: 0 auto;
     padding: 24px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     gap: 20px;
+    align-items: center;
 }
 
 .footer-center {
@@ -122,24 +136,28 @@ footer {
 
 /* Tablets + mobile */
 @media (max-width: 1024px) {
+
+    /* Left sidebar becomes drawer */
     #sidebar {
         position: fixed;
-        left: -260px;
         top: 60px;
+        left: -260px;
         height: calc(100vh - 60px);
         z-index: 1000;
-        transition: left 0.25s;
+        transition: left 0.25s ease;
     }
 
     body.sidebar-open #sidebar {
         left: 0;
     }
 
+    /* Toggle button appears */
     .menu-toggle {
         display: block;
     }
 
-    #right-ads {
+    /* Right sidebar hidden */
+    .right-ads {
         display: none;
     }
 }

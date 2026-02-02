@@ -16,52 +16,77 @@
     <meta property="og:type" content="website">
 
     <!-- Styles -->
-    <link rel="stylesheet" href="css/style.css">
-
-    <!-- Ads placeholder (future) -->
-    <!--
-    <script async src="https://example-ad-network.js"></script>
-    -->
+    <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
 
+    <!-- Header (loaded via includes.js) -->
     <div id="header"></div>
 
+    <!-- Main layout -->
     <div class="layout">
+
+        <!-- Left sidebar -->
         <aside id="sidebar"></aside>
 
+        <!-- Main content -->
         <main class="content">
-            <section class="hero">
-                <h1>Local-First Tools</h1>
-                <p class="subtitle">
-                    Privacy-friendly web tools that run entirely in your browser.
-                </p>
-            </section>
+            <div class="content-inner">
+                <section class="hero">
+                    <h1>Local-First Tools</h1>
+                    <p class="subtitle">
+                        Privacy-friendly web tools that run entirely in your browser.
+                    </p>
+                </section>
 
-            <section class="text-block">
-                <h2>Why local-first?</h2>
-                <ul>
-                    <li>Your files never leave your device</li>
-                    <li>Everything runs client-side</li>
-                    <li>Works offline after first load</li>
-                    <li>No accounts, no cookies, no analytics</li>
-                </ul>
-            </section>
+                <section class="text-block">
+                    <h2>Why local-first?</h2>
+                    <ul>
+                        <li>Your files never leave your device</li>
+                        <li>Everything runs client-side</li>
+                        <li>Works offline after first load</li>
+                        <li>No accounts, no cookies, no analytics</li>
+                    </ul>
+                </section>
 
-            <section class="tools">
-                <h2>Tools</h2>
+                <section class="tools">
+                    <h2>Tools</h2>
 
-                <div class="tool-card">
-                    <h3>Remove Image Metadata</h3>
-                    <p>Strip EXIF metadata from images locally in your browser.</p>
-                    <a href="tools/remove-image-metadata.html">Open tool →</a>
-                </div>
+                    <div class="tool-card">
+                        <h3>Remove Image Metadata</h3>
+                        <p>Strip EXIF metadata from images locally in your browser.</p>
+                        <a href="/tools/remove-image-metadata.html">Open tool →</a>
+                    </div>
 
-                <p class="coming-soon">More tools coming soon.</p>
-            </section>
+                    <p class="coming-soon">More tools coming soon.</p>
+                </section>
+            </div>
         </main>
+
+        <!-- Right sidebar (desktop only) -->
+        <aside class="right-ads">
+            <div class="ad-box">Ad space</div>
+            <div class="ad-box">Ad space</div>
+        </aside>
+
     </div>
 
-    <script src="js/includes.js"></script>
+    <!-- Footer -->
+    <footer>
+        <div class="footer-inner">
+            <div class="ad-box">Footer ad</div>
+
+            <div class="footer-center">
+                © 2026 Local-First Tools<br>
+                No uploads · No tracking · Everything runs locally
+            </div>
+
+            <div class="ad-box">Footer ad</div>
+        </div>
+    </footer>
+
+    <!-- Global includes -->
+    <script src="/assets/js/includes.js"></script>
+
 </body>
 </html>
