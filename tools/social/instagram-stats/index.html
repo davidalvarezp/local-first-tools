@@ -2,22 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>InstaStats | Local-First Tools</title>
-    
+    <title>Instagram – Not Following Back | Local-First Tools</title>
+
     <!-- Viewport -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- SEO -->
-    <meta name="description" content="Analyze your Instagram followers locally. Find who doesn't follow you back using Instagram data exports.">
-    <meta name="keywords" content="instagram stats, followers, following, local first, privacy">
-    <meta name="author" content="davidalvarezp">
+    <meta name="description" content="Find who you follow on Instagram that doesn’t follow you back. 100% local, no uploads.">
+    <meta name="keywords" content="instagram, followers, following, local first">
+    <meta name="author" content="localfirsttools">
 
     <!-- Open Graph -->
-    <meta property="og:title" content="InstaStats | Local-First Tools">
-    <meta property="og:description" content="Find who doesn't follow you back. 100% local, no uploads, no tracking.">
+    <meta property="og:title" content="Instagram – Not Following Back">
+    <meta property="og:description" content="Analyze your Instagram following and followers locally.">
     <meta property="og:type" content="website">
     <meta property="og:image" content="/assets/images/favicon.png">
-    <meta property="og:url" content="https://localfirsttools.pages.dev/tools/social/instagram-stats/">
+    <meta property="og:url" content="https://localfirsttools.pages.dev">
 
     <!-- Favicon -->
     <link rel="icon" href="/assets/images/favicon.webp" type="image/webp">
@@ -25,8 +25,24 @@
     <!-- Styles -->
     <link rel="stylesheet" href="/assets/css/style.css">
 
-    <!-- JSZip -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <style>
+        .file-group {
+            margin: 16px 0;
+        }
+        .results {
+            margin-top: 24px;
+        }
+        .results ul {
+            columns: 2;
+        }
+        .results li {
+            break-inside: avoid;
+        }
+        .count {
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+    </style>
 </head>
 <body>
 
@@ -35,47 +51,41 @@
 
     <!-- Main layout -->
     <div class="layout">
-        <!-- Sidebar izquierdo -->
         <aside id="sidebar"></aside>
 
-        <!-- Contenido principal -->
         <main class="content">
             <div class="content-inner">
                 <section class="page-content">
 
-                    <h1>InstaStats</h1>
+                    <h1>Instagram – Not Following Back</h1>
 
                     <p>
-                        Analyze your Instagram data export to find out
-                        who you follow that doesn’t follow you back.
+                        Select your <strong>following.json</strong> and one or more
+                        <strong>followers_*.json</strong> files from your Instagram data export.
                     </p>
 
                     <p>
-                        <strong>No uploads.</strong> Everything runs locally in your browser.
+                        <strong>Everything runs locally.</strong> No uploads, no tracking.
                     </p>
 
-                    <h2>Upload your Instagram ZIP</h2>
-
-                    <form id="uploadForm">
-                        <input type="file" id="zipFile" accept=".zip" required>
-                        <button type="submit">Process ZIP</button>
-                    </form>
-
-                    <div id="results"></div>
-
-                    <div id="downloadButtons" style="display:none; margin-top:24px;">
-                        <button id="downloadNotFollowingBack">Download: Not following you back</button>
-                        <p></p>
-                        <button id="downloadNotFollowingYou">Download: You don’t follow</button>
-                        <p></p>
-                        <button id="downloadMutualFollowers">Download: Mutual followers</button>
+                    <div class="file-group">
+                        <label><strong>following.json</strong></label><br>
+                        <input type="file" id="followingFile" accept=".json">
                     </div>
+
+                    <div class="file-group">
+                        <label><strong>followers_*.json</strong> (one or more)</label><br>
+                        <input type="file" id="followersFiles" accept=".json" multiple>
+                    </div>
+
+                    <button id="analyzeBtn">Analyze</button>
+
+                    <div id="results" class="results"></div>
 
                 </section>
             </div>
         </main>
 
-        <!-- Sidebar derecho -->
         <aside class="right-ads"></aside>
     </div>
 
@@ -86,84 +96,67 @@
     <script src="/assets/js/includes.js"></script>
     <script src="/assets/js/ui.js"></script>
 
-    <!-- InstaStats logic -->
+    <!-- Logic -->
     <script>
-        document.getElementById("uploadForm").addEventListener("submit", async (e) => {
-            e.preventDefault();
+        async function readJSON(file) {
+            return JSON.parse(await file.text());
+        }
 
-            const zipFile = document.getElementById("zipFile").files[0];
-            if (!zipFile) return;
+        document.getElementById("analyzeBtn").addEventListener("click", async () => {
+            const followingFile = document.getElementById("followingFile").files[0];
+            const followersFiles = document.getElementById("followersFiles").files;
+            const resultsEl = document.getElementById("results");
+
+            resultsEl.innerHTML = "";
+
+            if (!followingFile || followersFiles.length === 0) {
+                resultsEl.innerHTML = "<p>Please select following.json and at least one followers file.</p>";
+                return;
+            }
 
             try {
-                const zip = await JSZip.loadAsync(zipFile);
-                const BASE = "connections/followers_and_following/";
+                /* -------- FOLLOWING -------- */
+                const followingJSON = await readJSON(followingFile);
 
-                // Followers (puede haber múltiples archivos)
-                const followerFiles = Object.keys(zip.files)
-                    .filter(f => f.startsWith(BASE + "followers_") && f.endsWith(".json"));
+                const followingSet = new Set(
+                    followingJSON.relationships_following
+                        .map(u => u.title)
+                        .filter(Boolean)
+                );
 
-                if (!followerFiles.length) {
-                    throw new Error("Followers files not found");
+                /* -------- FOLLOWERS -------- */
+                const followersSet = new Set();
+
+                for (const file of followersFiles) {
+                    const json = await readJSON(file);
+
+                    json.forEach(u => {
+                        const username = u.string_list_data?.[0]?.value;
+                        if (username) followersSet.add(username);
+                    });
                 }
 
-                let followers = [];
-                for (const file of followerFiles) {
-                    const content = await zip.files[file].async("string");
-                    const json = JSON.parse(content);
-                    followers.push(...json); // array de objetos
-                }
+                /* -------- COMPARE -------- */
+                const notFollowingBack = [...followingSet]
+                    .filter(u => !followersSet.has(u))
+                    .sort((a, b) => a.localeCompare(b));
 
-                // Following
-                const followingFile = zip.files[BASE + "following.json"];
-                if (!followingFile) {
-                    throw new Error("following.json not found");
-                }
-
-                const followingJSON = JSON.parse(await followingFile.async("string")); // array de objetos
-
-                // Función de extracción robusta
-                const extract = (arr) =>
-                    arr.map(e => e.string_list_data?.[0]?.value || e.value || e).filter(Boolean);
-
-                const followersSet = new Set(extract(followers));
-                const followingSet = new Set(extract(followingJSON));
-
-                const notFollowingBack = [...followingSet].filter(u => !followersSet.has(u)).sort();
-                const notFollowingYou = [...followersSet].filter(u => !followingSet.has(u)).sort();
-                const mutual = [...followersSet].filter(u => followingSet.has(u)).sort();
-
-                document.getElementById("results").innerHTML = `
-                    <h2>Results</h2>
-                    <p><strong>${notFollowingBack.length}</strong> people don’t follow you back.</p>
-                    <ul>${notFollowingBack.map(u => `<li>${u}</li>`).join("")}</ul>
+                /* -------- RENDER -------- */
+                resultsEl.innerHTML = `
+                    <div class="count">
+                        ${notFollowingBack.length} people don’t follow you back
+                    </div>
+                    <ul>
+                        ${notFollowingBack.map(u => `<li>${u}</li>`).join("")}
+                    </ul>
                 `;
-
-                document.getElementById("downloadButtons").style.display = "block";
-
-                const download = (name, data) => {
-                    const blob = new Blob([data.join("\n")], { type: "text/plain" });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement("a");
-                    a.href = url;
-                    a.download = name;
-                    a.click();
-                    URL.revokeObjectURL(url);
-                };
-
-                document.getElementById("downloadNotFollowingBack").onclick =
-                    () => download("not_following_you_back.txt", notFollowingBack);
-
-                document.getElementById("downloadNotFollowingYou").onclick =
-                    () => download("you_dont_follow.txt", notFollowingYou);
-
-                document.getElementById("downloadMutualFollowers").onclick =
-                    () => download("mutual_followers.txt", mutual);
 
             } catch (err) {
                 console.error(err);
-                alert("Error processing the ZIP. Make sure it's the original Instagram export.");
+                resultsEl.innerHTML = "<p>Error processing files. Make sure they are valid Instagram JSON files.</p>";
             }
         });
     </script>
+
 </body>
 </html>
