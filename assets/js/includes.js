@@ -8,8 +8,8 @@ const loadPartial = (selector, path) => {
 
 // Cargar todos los partials
 document.addEventListener("DOMContentLoaded", () => {
-    loadPartial("#header", "/assets/partials/header.html");
-    loadPartial("#sidebar", "/assets/partials/sidebar.html");
-    loadPartial(".right-ads", "/assets/partials/right-ads.html");
-    loadPartial("#footer", "/assets/partials/footer.html");
+    loadPartial("#header", "/local-first-tools/assets/partials/header.html");
+    loadPartial("#sidebar", "/local-first-tools/assets/partials/sidebar.html");
+    loadPartial(".right-ads", "/local-first-tools/assets/partials/right-ads.html");
+    loadPartial("#footer", "/local-first-tools/assets/partials/footer.html");
 });
