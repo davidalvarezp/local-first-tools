@@ -92,6 +92,40 @@ body {
     margin: 0 auto;
 }
 
+/* ===== Page content typography ===== */
+.page-content {
+    padding-top: 16px;
+}
+
+.page-content h1 {
+    font-size: 2rem;
+    margin-bottom: 16px;
+}
+
+.page-content h2 {
+    font-size: 1.3rem;
+    margin: 32px 0 12px;
+}
+
+.page-content p {
+    margin-bottom: 16px;
+    line-height: 1.6;
+    color: var(--text-main);
+}
+
+.page-content ul {
+    margin: 16px 0 24px 20px;
+}
+
+.page-content li {
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+
+.page-content em {
+    color: var(--text-muted);
+}
+
 /* ===== Right sidebar (ads) — desktop only ===== */
 .right-ads {
     width: 260px;
