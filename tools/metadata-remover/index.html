@@ -13,6 +13,7 @@
 
     <!-- Tool-specific styles -->
     <style>
+        /* === Tool === */
         .tool-wrapper {
             margin-top: 32px;
         }
@@ -73,6 +74,60 @@
             font-size: 0.85rem;
             color: var(--text-muted);
         }
+
+        /* === Right Ad Sidebar === */
+        .right-ads {
+            width: 260px;
+            border-left: 1px solid var(--border);
+            background: var(--bg-panel);
+            padding: 20px;
+        }
+
+        .ad-box {
+            border: 1px dashed var(--border);
+            padding: 20px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+        }
+
+        /* === Footer === */
+        footer {
+            border-top: 1px solid var(--border);
+            background: var(--bg-panel);
+            margin-top: 40px;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .footer-center {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* === Responsive === */
+        @media (max-width: 1100px) {
+            .right-ads {
+                display: none;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .footer-inner {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -88,11 +143,6 @@
             Strip EXIF metadata from images locally in your browser.
             No uploads. No tracking.
         </p>
-
-        <!-- Ad slot (future) -->
-        <div class="ad-slot">
-            Ad space (coming later)
-        </div>
 
         <section class="tool-wrapper">
             <div id="dropArea" class="drop-area">
@@ -115,7 +165,26 @@
             </p>
         </section>
     </main>
+
+    <!-- Right sidebar ads -->
+    <aside class="right-ads">
+        <div class="ad-box">Ad space</div>
+        <div class="ad-box">Ad space</div>
+    </aside>
 </div>
+
+<footer>
+    <div class="footer-inner">
+        <div class="ad-box">Footer ad</div>
+
+        <div class="footer-center">
+            © 2026 Local-First Tools<br>
+            No uploads · No tracking · Everything runs locally
+        </div>
+
+        <div class="ad-box">Footer ad</div>
+    </div>
+</footer>
 
 <!-- Global layout loader -->
 <script src="../../js/includes.js"></script>
