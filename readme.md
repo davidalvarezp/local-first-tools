@@ -22,10 +22,7 @@ These tools don’t.
 
 ## Tools
 
-- **Remove Image Metadata**  
-  Strip EXIF metadata from images locally in your browser.
-
-*(More tools coming soon)*
+*(New tools coming soon)*
 
 ---
 
@@ -33,7 +30,7 @@ These tools don’t.
 
 You can use the tools directly from the website:
 
- -> [davidalvarezp.github.io/local-first-tools/](https://davidalvarezp.github.io/local-first-tools/)
+ -> [localfirsttools.pages.dev](https://localfirsttools.pages.dev/)
 
 Or clone the repository and run them locally:
 
