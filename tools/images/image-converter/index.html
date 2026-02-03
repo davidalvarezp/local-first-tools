@@ -2,225 +2,83 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Image Format Converter — Local-First Tools</title>
+    <title>Image Converter | Local-First Tools</title>
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="Convert images locally in your browser. PNG, JPG, WebP. No uploads.">
+    <meta name="author" content="Local-First Tools">
+
+    <link rel="icon" href="/assets/images/favicon.webp" type="image/webp">
+
+    <!-- Base styles -->
     <link rel="stylesheet" href="/assets/css/style.css">
-
-    <style>
-        /* === Tool-specific styles === */
-        .tool-wrapper {
-            margin-top: 32px;
-        }
-
-        .drop-area {
-            border: 2px dashed var(--border);
-            border-radius: 12px;
-            padding: 48px 20px;
-            text-align: center;
-            cursor: pointer;
-            color: var(--text-muted);
-            transition: border 0.2s, background 0.2s;
-        }
-
-        .drop-area.hover {
-            border-color: var(--accent);
-            background: #0f172a;
-        }
-
-        .format-selector {
-            margin-top: 16px;
-            text-align: center;
-        }
-
-        .format-selector select {
-            padding: 6px 10px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            background: var(--bg-panel);
-            color: var(--text-main);
-            font-size: 0.95rem;
-            cursor: pointer;
-        }
-
-        .images-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 20px;
-            margin-top: 32px;
-        }
-
-        .image-card {
-            border: 1px solid var(--border);
-            background: #0e0e0e;
-            border-radius: 10px;
-            padding: 10px;
-            text-align: center;
-        }
-
-        .image-card img {
-            width: 100%;
-            border-radius: 6px;
-            margin-bottom: 10px;
-        }
-
-        .image-card button {
-            background: var(--accent);
-            border: none;
-            border-radius: 6px;
-            padding: 6px 10px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            color: #000;
-            font-weight: 600;
-        }
-
-        .image-card button:hover {
-            opacity: 0.9;
-        }
-
-        .privacy-note {
-            margin-top: 24px;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-    </style>
+    <!-- Tool custom styles -->
+    <link rel="stylesheet" href="/assets/css/image-converter.css">
 </head>
 <body>
 
-    <!-- Header -->
-    <div id="header"></div>
+<div id="header"></div>
 
-    <!-- Main layout -->
-    <div class="layout">
-        <!-- Sidebar izquierdo -->
-        <aside id="sidebar-left"></aside>
+<div class="layout">
+    <aside id="sidebar-left"></aside>
 
-        <!-- Contenido principal -->
-        <main class="content">
-            <div class="content-inner">
-                <section class="page-content">
-                    <h1>Image Format Converter</h1>
-                    <p class="subtitle">
-                        Convert your images to PNG, JPG, or WebP locally in your browser.
-                        No uploads. No tracking.
-                    </p>
+    <main class="content">
+        <div class="content-inner">
+            <section class="page-content">
+                <h1>Image Format Converter</h1>
+                <p class="subtitle">
+                    Convert images locally in your browser. No uploads. No tracking.
+                </p>
 
-                    <section class="tool-wrapper">
-                        <div id="dropArea" class="drop-area">
-                            Drag & drop images here or click to select
+                <section class="tool-wrapper">
+
+                    <!-- Drop area -->
+                    <div id="dropArea" class="drop-area">
+                        <strong>Drag & drop images</strong>
+                        <span>or click to select files</span>
+                    </div>
+
+                    <input type="file" id="fileInput" accept="image/*" multiple hidden>
+
+                    <!-- Toolbar -->
+                    <div class="tool-actions">
+                        <div class="tool-info">
+                            <span id="imageCount">0 images loaded</span>
                         </div>
 
-                        <input
-                            type="file"
-                            id="fileInput"
-                            accept="image/*"
-                            multiple
-                            hidden
-                        >
-
-                        <div class="format-selector">
-                            <label for="formatSelect">Output format: </label>
+                        <div class="tool-controls">
                             <select id="formatSelect">
                                 <option value="image/png">PNG</option>
                                 <option value="image/jpeg">JPG</option>
                                 <option value="image/webp">WebP</option>
                             </select>
+
+                            <button id="convertBtn" disabled>Convert</button>
+                            <button id="downloadAllBtn" disabled>Download all</button>
+                            <button id="clearBtn" class="secondary">Clear</button>
                         </div>
+                    </div>
 
-                        <div id="images" class="images-grid"></div>
+                    <!-- Results -->
+                    <div id="images" class="images-grid"></div>
 
-                        <p class="privacy-note">
-                            All processing happens locally in your browser. Your files never leave your device.
-                        </p>
-                    </section>
+                    <p class="privacy-note">
+                        All processing happens locally in your browser.
+                    </p>
                 </section>
-            </div>
-        </main>
+            </section>
+        </div>
+    </main>
 
-        <!-- Sidebar derecho -->
-        <aside class="sidebar-right"></aside>
-        
-    </div>
+    <aside class="sidebar-right"></aside>
+</div>
 
-    <!-- Footer -->
-    <div id="footer"></div>
+<div id="footer"></div>
 
-    <!-- Scripts -->
-    <script src="/assets/js/includes.js"></script>
-    <script src="/assets/js/ui.js"></script>
-
-    <script>
-        // Image Format Converter logic
-        const dropArea = document.getElementById('dropArea');
-        const fileInput = document.getElementById('fileInput');
-        const imagesGrid = document.getElementById('images');
-        const formatSelect = document.getElementById('formatSelect');
-
-        dropArea.addEventListener('click', () => fileInput.click());
-
-        dropArea.addEventListener('dragover', e => {
-            e.preventDefault();
-            dropArea.classList.add('hover');
-        });
-
-        dropArea.addEventListener('dragleave', () => {
-            dropArea.classList.remove('hover');
-        });
-
-        dropArea.addEventListener('drop', e => {
-            e.preventDefault();
-            dropArea.classList.remove('hover');
-            handleFiles(e.dataTransfer.files);
-        });
-
-        fileInput.addEventListener('change', () => handleFiles(fileInput.files));
-
-        function handleFiles(files) {
-            Array.from(files).forEach(file => {
-                if (!file.type.startsWith('image/')) return;
-
-                const reader = new FileReader();
-                reader.onload = e => {
-                    const img = new Image();
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = img.width;
-                        canvas.height = img.height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0);
-
-                        const outputFormat = formatSelect.value;
-
-                        canvas.toBlob(blob => {
-                            const url = URL.createObjectURL(blob);
-
-                            const card = document.createElement('div');
-                            card.className = 'image-card';
-
-                            const imageEl = document.createElement('img');
-                            imageEl.src = url;
-
-                            const button = document.createElement('button');
-                            button.textContent = 'Download';
-                            button.onclick = () => {
-                                const a = document.createElement('a');
-                                a.href = url;
-                                const ext = outputFormat.split('/')[1];
-                                a.download = `converted_${file.name.split('.').slice(0, -1).join('.')}.${ext}`;
-                                a.click();
-                            };
-
-                            card.appendChild(imageEl);
-                            card.appendChild(button);
-                            imagesGrid.appendChild(card);
-                        }, outputFormat);
-                    };
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            });
-        }
-    </script>
+<script src="/assets/js/includes.js"></script>
+<script src="/assets/js/ui.js"></script>
+<script src="/assets/js/image-converter.js"></script>
 
 </body>
 </html>
