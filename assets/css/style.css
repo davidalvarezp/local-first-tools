@@ -59,7 +59,7 @@ body {
 }
 
 /* ===== Left sidebar ===== */
-#sidebar {
+#sidebar-left {
     width: 240px;
     background: var(--bg-panel);
     border-right: 1px solid var(--border);
@@ -127,7 +127,7 @@ body {
 }
 
 /* ===== Right sidebar (ads) — desktop only ===== */
-.right-ads {
+.sidebar-right {
     width: 260px;
     border-left: 1px solid var(--border);
     background: var(--bg-panel);
@@ -135,7 +135,7 @@ body {
     flex-shrink: 0;
 }
 
-.ad-box {
+.widget-box {
     border: 1px dashed var(--border);
     padding: 20px;
     margin-bottom: 20px;
@@ -172,7 +172,7 @@ footer {
 @media (max-width: 1024px) {
 
     /* Left sidebar becomes drawer */
-    #sidebar {
+    #sidebar-left {
         position: fixed;
         top: 60px;
         left: -260px;
@@ -181,7 +181,7 @@ footer {
         transition: left 0.25s ease;
     }
 
-    body.sidebar-open #sidebar {
+    body.sidebar-open #sidebar-left {
         left: 0;
     }
 
@@ -191,7 +191,7 @@ footer {
     }
 
     /* Right sidebar hidden */
-    .right-ads {
+    .sidebar-right {
         display: none;
     }
 }
