@@ -9,7 +9,7 @@ const loadPartial = (selector, path) => {
 // Cargar todos los partials
 document.addEventListener("DOMContentLoaded", () => {
     loadPartial("#header", "/assets/partials/header.html");
-    loadPartial("#sidebar", "/assets/partials/sidebar.html");
-    loadPartial(".right-ads", "/assets/partials/right-ads.html");
+    loadPartial("#sidebar-left", "/assets/partials/sidebar-left.html");
+    loadPartial(".sidebar-right", "/assets/partials/sidebar-right.html");
     loadPartial("#footer", "/assets/partials/footer.html");
 });
