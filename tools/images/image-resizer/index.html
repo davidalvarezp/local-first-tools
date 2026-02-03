@@ -2,19 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Image Resizer — Local-First Tools</title>
+    <title>Image Resizer | Local-First Tools</title>
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" href="/assets/images/favicon.webp" type="image/webp">
+
+    <!-- Base styles -->
     <link rel="stylesheet" href="/assets/css/style.css">
 
     <style>
-        /* === Tool-specific styles === */
+        /* ===== Image Resizer (custom) ===== */
+
         .tool-wrapper {
             margin-top: 32px;
         }
 
         .drop-area {
             border: 2px dashed var(--border);
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 48px 20px;
             text-align: center;
             cursor: pointer;
@@ -22,36 +27,93 @@
             transition: border 0.2s, background 0.2s;
         }
 
+        .drop-area strong {
+            display: block;
+            font-size: 1.1rem;
+            color: var(--text-main);
+        }
+
+        .drop-area span {
+            font-size: 0.85rem;
+        }
+
         .drop-area.hover {
             border-color: var(--accent);
             background: #0f172a;
         }
 
-        .resize-controls {
-            margin-top: 16px;
+        .tool-actions {
+            margin-top: 24px;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--bg-panel);
             display: flex;
-            gap: 10px;
             flex-wrap: wrap;
-            justify-content: center;
+            gap: 16px;
+            justify-content: space-between;
             align-items: center;
         }
 
+        .resize-controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .resize-controls label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
         .resize-controls input[type="number"] {
-            width: 80px;
+            width: 90px;
             padding: 6px 8px;
             border-radius: 6px;
             border: 1px solid var(--border);
             background: var(--bg-panel);
             color: var(--text-main);
-            font-size: 0.95rem;
         }
 
-        .resize-controls label {
-            color: var(--text-main);
-            font-size: 0.9rem;
+        .resize-controls input[type="checkbox"] {
+            accent-color: var(--accent);
+        }
+
+        .tool-info {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .tool-controls {
             display: flex;
+            gap: 10px;
             align-items: center;
-            gap: 4px;
+        }
+
+        .tool-controls button {
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: none;
+            background: var(--accent);
+            color: #000;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .tool-controls button.secondary {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+
+        .tool-controls button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
         }
 
         .images-grid {
@@ -64,194 +126,233 @@
         .image-card {
             border: 1px solid var(--border);
             background: #0e0e0e;
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 10px;
             text-align: center;
         }
 
         .image-card img {
             width: 100%;
-            border-radius: 6px;
+            border-radius: 8px;
             margin-bottom: 10px;
         }
 
-        .image-card button {
-            background: var(--accent);
-            border: none;
-            border-radius: 6px;
-            padding: 6px 10px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            color: #000;
-            font-weight: 600;
+        .image-card .meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
         }
 
-        .image-card button:hover {
-            opacity: 0.9;
+        .image-card button {
+            width: 100%;
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: none;
+            background: var(--accent);
+            color: #000;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
         }
 
         .privacy-note {
             margin-top: 24px;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
         }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
-    <div id="header"></div>
+<div id="header"></div>
 
-    <!-- Main layout -->
-    <div class="layout">
-        <!-- Sidebar izquierdo -->
-        <aside id="sidebar"></aside>
+<div class="layout">
+    <aside id="sidebar-left"></aside>
 
-        <!-- Contenido principal -->
-        <main class="content">
-            <div class="content-inner">
-                <section class="page-content">
-                    <h1>Image Resizer</h1>
-                    <p class="subtitle">
-                        Resize your images locally in your browser. Maintain aspect ratio or set custom width/height. No uploads, no tracking.
-                    </p>
+    <main class="content">
+        <div class="content-inner">
+            <section class="page-content">
+                <h1>Image Resizer</h1>
+                <p>
+                    Resize images locally in your browser. Keep aspect ratio or set custom dimensions.
+                </p>
 
-                    <section class="tool-wrapper">
-                        <div id="dropArea" class="drop-area">
-                            Drag & drop images here or click to select
-                        </div>
+                <section class="tool-wrapper">
 
-                        <input
-                            type="file"
-                            id="fileInput"
-                            accept="image/*"
-                            multiple
-                            hidden
-                        >
+                    <div id="dropArea" class="drop-area">
+                        <strong>Drag & drop images</strong>
+                        <span>or click to select files</span>
+                    </div>
 
+                    <input type="file" id="fileInput" accept="image/*" multiple hidden>
+
+                    <div class="tool-actions">
                         <div class="resize-controls">
-                            <label for="widthInput">Width:
+                            <label>
+                                Width
                                 <input type="number" id="widthInput" placeholder="px">
                             </label>
 
-                            <label for="heightInput">Height:
+                            <label>
+                                Height
                                 <input type="number" id="heightInput" placeholder="px">
                             </label>
 
                             <label>
                                 <input type="checkbox" id="maintainRatio" checked>
-                                Maintain Aspect Ratio
+                                Keep ratio
                             </label>
                         </div>
 
-                        <div id="images" class="images-grid"></div>
+                        <div class="tool-controls">
+                            <span class="tool-info" id="imageCount">0 images loaded</span>
+                            <button id="resizeBtn" disabled>Resize</button>
+                            <button id="clearBtn" class="secondary">Clear</button>
+                        </div>
+                    </div>
 
-                        <p class="privacy-note">
-                            All processing happens locally in your browser. Your files never leave your device.
-                        </p>
-                    </section>
+                    <div id="images" class="images-grid"></div>
+
+                    <p class="privacy-note">
+                        All processing happens locally in your browser.
+                    </p>
+
                 </section>
-            </div>
-        </main>
+            </section>
+        </div>
+    </main>
 
-        <!-- Sidebar derecho -->
-        <aside class="right-ads">
-            <div class="ad-box">Ad space</div>
-            <div class="ad-box">Ad space</div>
-        </aside>
-    </div>
+    <aside class="sidebar-right"></aside>
+</div>
 
-    <!-- Footer -->
-    <div id="footer"></div>
+<div id="footer"></div>
 
-    <!-- Scripts -->
-    <script src="/assets/js/includes.js"></script>
-    <script src="/assets/js/ui.js"></script>
+<script src="/assets/js/includes.js"></script>
+<script src="/assets/js/ui.js"></script>
 
-    <script>
-        // Image Resizer logic
-        const dropArea = document.getElementById('dropArea');
-        const fileInput = document.getElementById('fileInput');
-        const imagesGrid = document.getElementById('images');
-        const widthInput = document.getElementById('widthInput');
-        const heightInput = document.getElementById('heightInput');
-        const maintainRatio = document.getElementById('maintainRatio');
+<script>
+/* ===== Image Resizer Logic (INLINE, NO RACE CONDITIONS) ===== */
 
-        dropArea.addEventListener('click', () => fileInput.click());
+(() => {
+    const dropArea = document.getElementById('dropArea');
+    const fileInput = document.getElementById('fileInput');
+    const imagesGrid = document.getElementById('images');
+    const widthInput = document.getElementById('widthInput');
+    const heightInput = document.getElementById('heightInput');
+    const maintainRatio = document.getElementById('maintainRatio');
+    const resizeBtn = document.getElementById('resizeBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const imageCount = document.getElementById('imageCount');
 
-        dropArea.addEventListener('dragover', e => {
-            e.preventDefault();
-            dropArea.classList.add('hover');
+    let files = [];
+
+    dropArea.addEventListener('click', () => fileInput.click());
+
+    dropArea.addEventListener('dragover', e => {
+        e.preventDefault();
+        dropArea.classList.add('hover');
+    });
+
+    dropArea.addEventListener('dragleave', () => {
+        dropArea.classList.remove('hover');
+    });
+
+    dropArea.addEventListener('drop', e => {
+        e.preventDefault();
+        dropArea.classList.remove('hover');
+        addFiles(e.dataTransfer.files);
+    });
+
+    fileInput.addEventListener('change', () => addFiles(fileInput.files));
+
+    function addFiles(list) {
+        Array.from(list).forEach(file => {
+            if (file.type.startsWith('image/')) {
+                files.push(file);
+            }
         });
+        updateState();
+    }
 
-        dropArea.addEventListener('dragleave', () => {
-            dropArea.classList.remove('hover');
-        });
+    function updateState() {
+        imageCount.textContent = `${files.length} images loaded`;
+        resizeBtn.disabled = files.length === 0;
+    }
 
-        dropArea.addEventListener('drop', e => {
-            e.preventDefault();
-            dropArea.classList.remove('hover');
-            handleFiles(e.dataTransfer.files);
-        });
+    resizeBtn.addEventListener('click', () => {
+        imagesGrid.innerHTML = '';
+        files.forEach(file => resizeImage(file));
+    });
 
-        fileInput.addEventListener('change', () => handleFiles(fileInput.files));
+    function resizeImage(file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            const img = new Image();
+            img.onload = () => {
+                let targetW = parseInt(widthInput.value) || img.width;
+                let targetH = parseInt(heightInput.value) || img.height;
 
-        function handleFiles(files) {
-            Array.from(files).forEach(file => {
-                if (!file.type.startsWith('image/')) return;
+                if (maintainRatio.checked) {
+                    const ratio = img.width / img.height;
+                    if (widthInput.value && !heightInput.value) {
+                        targetH = Math.round(targetW / ratio);
+                    } else if (!widthInput.value && heightInput.value) {
+                        targetW = Math.round(targetH * ratio);
+                    } else if (widthInput.value && heightInput.value) {
+                        targetH = Math.round(targetW / ratio);
+                    }
+                }
 
-                const reader = new FileReader();
-                reader.onload = e => {
-                    const img = new Image();
-                    img.onload = () => {
-                        let targetWidth = parseInt(widthInput.value) || img.width;
-                        let targetHeight = parseInt(heightInput.value) || img.height;
+                const canvas = document.createElement('canvas');
+                canvas.width = targetW;
+                canvas.height = targetH;
+                canvas.getContext('2d').drawImage(img, 0, 0, targetW, targetH);
 
-                        if (maintainRatio.checked) {
-                            const ratio = img.width / img.height;
-                            if (widthInput.value && !heightInput.value) {
-                                targetHeight = Math.round(targetWidth / ratio);
-                            } else if (!widthInput.value && heightInput.value) {
-                                targetWidth = Math.round(targetHeight * ratio);
-                            } else if (widthInput.value && heightInput.value) {
-                                targetHeight = Math.round(targetWidth / ratio);
-                            }
-                        }
+                canvas.toBlob(blob => {
+                    const url = URL.createObjectURL(blob);
+                    renderCard(file, url, targetW, targetH);
+                }, 'image/png');
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
 
-                        const canvas = document.createElement('canvas');
-                        canvas.width = targetWidth;
-                        canvas.height = targetHeight;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+    function renderCard(file, url, w, h) {
+        const card = document.createElement('div');
+        card.className = 'image-card';
 
-                        canvas.toBlob(blob => {
-                            const url = URL.createObjectURL(blob);
+        const img = document.createElement('img');
+        img.src = url;
 
-                            const card = document.createElement('div');
-                            card.className = 'image-card';
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+        meta.textContent = `${w} × ${h}px`;
 
-                            const imageEl = document.createElement('img');
-                            imageEl.src = url;
+        const btn = document.createElement('button');
+        btn.textContent = 'Download';
+        btn.onclick = () => downloadFile(file, url);
 
-                            const button = document.createElement('button');
-                            button.textContent = 'Download';
-                            button.onclick = () => {
-                                const a = document.createElement('a');
-                                a.href = url;
-                                a.download = `resized_${file.name}`;
-                                a.click();
-                            };
+        card.appendChild(img);
+        card.appendChild(meta);
+        card.appendChild(btn);
+        imagesGrid.appendChild(card);
+    }
 
-                            card.appendChild(imageEl);
-                            card.appendChild(button);
-                            imagesGrid.appendChild(card);
-                        }, 'image/png');
-                    };
-                    img.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            });
-        }
-    </script>
+    function downloadFile(file, url) {
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `resized_${file.name}`;
+        a.click();
+    }
+
+    clearBtn.addEventListener('click', () => {
+        files = [];
+        imagesGrid.innerHTML = '';
+        updateState();
+    });
+})();
+</script>
+
 </body>
 </html>
